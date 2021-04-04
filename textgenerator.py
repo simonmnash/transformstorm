@@ -25,4 +25,4 @@ class TextGenerator():
 										num_return_sequences=1
 										)
 		new_block = self.tokenizer.decode(sample_outputs[0], skip_special_tokens=True)
-		return new_block
+		return new_block[raw_prompt_length:]
