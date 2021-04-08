@@ -3,12 +3,17 @@ import curses
 from textgenerator import TextGenerator
 import logging.config
 import textwrap
+import threading
+from time import sleep
+
 from random import randint
 logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': True,
 })
 text_boxes = {}
+highlighted_slot_index = 0
+slots = [0, 2, 4, 6, 8, 10]
 class TextAccumulator():
     def __init__(self):
         self.complete_text = ""
@@ -49,28 +54,14 @@ class TextBox():
 
 global_text_accumulator = TextAccumulator()
 
-def draw_menu(stdscrr):
-    stdscr = curses.initscr()
-    height, width = stdscr.getmaxyx()
-    
+def input_thread(stdscr):
+    global current_slot_index
+    global highlighted_slot_index
+    global slots
     curses.curs_set(0)
     k = 0
-    stdscr.timeout(1500)
-
-    # Start colors in curses
-    stdscr.refresh()
-    curses.start_color()
-    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
-    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
-
-    slots = [1, 3, 5, 7, 9, 11]
-    current_slot_index = 0
-    highlighted_slot_index = 0
-    # Loop where k is the last character pressed
     while (k != ord('q')):
-        highlighted_slot = slots[highlighted_slot_index]
-        if k == ord('d'):
+        if k == curses.KEY_DOWN:
             if text_boxes.get(highlighted_slot_index):
                 keep_text = text_boxes.get(highlighted_slot_index).text
                 new_box = TextBox(slots[highlighted_slot_index], keep_text, False)
@@ -80,7 +71,7 @@ def draw_menu(stdscrr):
                 keep_text = text_boxes.get(highlighted_slot_index).text
                 new_box = TextBox(slots[highlighted_slot_index], keep_text, True)
                 text_boxes[highlighted_slot_index]=new_box
-        elif k == ord('a'):
+        if k == curses.KEY_UP:
             if text_boxes.get(highlighted_slot_index):
                 keep_text = text_boxes.get(highlighted_slot_index).text
                 new_box = TextBox(slots[highlighted_slot_index], keep_text, False)
@@ -88,7 +79,7 @@ def draw_menu(stdscrr):
             highlighted_slot_index = (highlighted_slot_index - 1) % len(slots)
             if text_boxes.get(highlighted_slot_index):
                 keep_text = text_boxes.get(highlighted_slot_index).text
-                new_box = TextBox(slots[highlighted_slot_index], keep_text, False)
+                new_box = TextBox(slots[highlighted_slot_index], keep_text, True)
                 text_boxes[highlighted_slot_index]=new_box
 
         if k == ord(' '):
@@ -99,7 +90,34 @@ def draw_menu(stdscrr):
             stdscr.addstr(0, 0, textwrap.fill(global_text_accumulator.complete_text, 50))
             stdscr.attroff(curses.color_pair(2))
             stdscr.attroff(curses.A_BOLD)
-        
+
+        stdscr.refresh()
+
+        # Wait for next input
+        k = stdscr.getch()
+
+def draw_menu(stdscrr):
+    stdscr = curses.initscr()
+
+    height, width = stdscr.getmaxyx()
+
+    # Start colors in curses
+    stdscr.refresh()
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    current_slot_index = 0
+    
+    for slot in slots:
+        new_box = TextBox(slot, global_text_accumulator.generate_add_text_candidate(), False)
+        text_boxes[slot] = new_box
+    
+    t = threading.Thread(name ='daemon', target=input_thread, args=(stdscr,))
+    t.setDaemon(True)
+    t.start()
+
+    while True:
         if highlighted_slot_index == current_slot_index:
             if text_boxes.get(current_slot_index):
                 keep_text = text_boxes.get(current_slot_index).text
@@ -111,18 +129,9 @@ def draw_menu(stdscrr):
         text_boxes[current_slot_index]=new_box
 
         for box in text_boxes.values():
-        #    box_y, box_x =  box.getbegyx()
-        #    if box_y < 2:
-        #        box.clear()
-        #        box.refresh()
-        #        text_boxes.remove(box)
-        #    else:
-        #        box.mvwin(box_y - 2, box_x)
             box.refresh()
         current_slot_index = (current_slot_index + 1) % len(slots)
-        stdscr.refresh()
-        # Wait for next input
-        k = stdscr.getch()
+        sleep(1)
 
 def main():
     curses.wrapper(draw_menu)
