@@ -90,7 +90,16 @@ def input_thread(stdscr):
             stdscr.addstr(0, 0, textwrap.fill(global_text_accumulator.complete_text, 50))
             stdscr.attroff(curses.color_pair(2))
             stdscr.attroff(curses.A_BOLD)
-
+            for slot_index in range(0, len(slots)):
+                if slot_index==0:
+                    new_box = TextBox(slots[slot_index], global_text_accumulator.generate_add_text_candidate(), True)
+                else:
+                    new_box = TextBox(slots[slot_index], global_text_accumulator.generate_add_text_candidate(), False)
+                text_boxes[slot_index]=new_box
+            current_slot_index = 0
+            highlighted_slot_index = 0
+        for box in text_boxes.values():
+            box.refresh()
         stdscr.refresh()
 
         # Wait for next input
@@ -109,9 +118,12 @@ def draw_menu(stdscrr):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
     current_slot_index = 0
     
-    for slot in slots:
-        new_box = TextBox(slot, global_text_accumulator.generate_add_text_candidate(), False)
-        text_boxes[slot] = new_box
+    for slot_index in range(0, len(slots)):
+        if slot_index==0:
+            new_box = TextBox(slots[slot_index], global_text_accumulator.generate_add_text_candidate(), True)
+        else:
+            new_box = TextBox(slots[slot_index], global_text_accumulator.generate_add_text_candidate(), False)
+        text_boxes[slot_index] = new_box
     
     t = threading.Thread(name ='daemon', target=input_thread, args=(stdscr,))
     t.setDaemon(True)
@@ -127,11 +139,9 @@ def draw_menu(stdscrr):
         else:
             new_box = TextBox(slots[current_slot_index], global_text_accumulator.generate_add_text_candidate(), False)
         text_boxes[current_slot_index]=new_box
-
-        for box in text_boxes.values():
-            box.refresh()
         current_slot_index = (current_slot_index + 1) % len(slots)
-        sleep(1)
+        sleep(1.5)
+
 
 def main():
     curses.wrapper(draw_menu)
