@@ -13,15 +13,25 @@ class TextAccumulator():
         self.screen = stdscr
 
     def add_text(self, text):
+        height, width = self.screen.getmaxyx()
         self.complete_text = self.complete_text + text
-        new_box = curses.newwin(100, 60, 0, 75)
+        new_box = curses.newwin(height-5, 60, 0, 75)
         new_box.attron(curses.color_pair(2))
         new_box.attron(curses.A_BOLD)
         new_box.addstr(0, 0, textwrap.fill(self.complete_text, 100))
         new_box.attroff(curses.color_pair(2))
         new_box.attroff(curses.A_BOLD)
         new_box.refresh()
-    
+    def backspace(self):
+        height, width = self.screen.getmaxyx()
+        self.complete_text = self.complete_text[:-1]
+        new_box = curses.newwin(height-5, 60, 0, 75)
+        new_box.attron(curses.color_pair(2))
+        new_box.attron(curses.A_BOLD)
+        new_box.addstr(0, 0, textwrap.fill(self.complete_text, 100))
+        new_box.attroff(curses.color_pair(2))
+        new_box.attroff(curses.A_BOLD)
+        new_box.refresh()
     def generate_add_text_candidate(self):
         return self.text_generator.create_textblock(self.complete_text)
 
@@ -75,7 +85,8 @@ class OptionWindow():
 
     def set_screen(self, stdscr):
         self.screen = stdscr
-        for slot in range(0, 16, 2):
+        height, width = stdscr.getmaxyx()
+        for slot in range(0, 12, 2):
             self.add_new_option(slot, "LOADING...", slot==0)
 
     def add_new_option(self, new_option_location, new_option_text, highlighted):
@@ -87,7 +98,7 @@ class OptionWindow():
             pass
         else:
             self.add_new_option(self.text_generation_ticker, new_option_text, False)
-        self.text_generation_ticker = (self.text_generation_ticker + 2) % 16
+        self.text_generation_ticker = (self.text_generation_ticker + 2) % 12
 
     def remove_focus(self):
         for option in self.options.values():

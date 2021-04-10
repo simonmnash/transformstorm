@@ -37,6 +37,12 @@ def input_thread(stdscr):
                 option_window.set_screen(stdscr)
                 current_slot_index = 0
                 option_window.highlight_ticker = 0
+        if k == curses.KEY_LEFT:
+            global_text_accumulator.backspace()
+            option_window.set_screen(stdscr)
+            current_slot_index = 0
+            option_window.highlight_ticker = 0
+
     
         for box in option_window.options.values():
             box.refresh()
@@ -51,6 +57,17 @@ def draw_menu(stdscrr):
     # Start colors in curses
     stdscr.refresh()
     curses.start_color()
+
+    new_box = curses.newwin(1, width, height-2, 0)
+    new_box.attron(curses.color_pair(1))
+    new_box.attron(curses.A_BOLD)
+    new_box.addstr(0, 0, "UP/DOWN Selects text. RIGHT Adds selected text block to game. LEFT Removes rightmost character from the game. q exits.")
+    new_box.attroff(curses.color_pair(1))
+    new_box.attroff(curses.A_BOLD)
+    new_box.refresh()
+
+
+
     curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
@@ -63,7 +80,7 @@ def draw_menu(stdscrr):
 
     while t.is_alive():
         option_window.attempt_to_generate_new_option_at_text_ticker_location(global_text_accumulator.generate_add_text_candidate())
-        sleep(0.5)
+        sleep(1)
 
         option_window.focus_option_at_key(option_window.highlight_ticker)
         for box in option_window.options.values():
