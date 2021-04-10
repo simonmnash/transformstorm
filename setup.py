@@ -6,5 +6,6 @@ setup(name='transformstorm',
       url='https://github.com/simonmnash/transformstorm',
       author='Simon Nash',
       license='MIT',
-      packages=['transformers', 'torch']
+      install_requires=['transformers', 'torch'],
+      scripts=["bin/transformstorm"]
       )

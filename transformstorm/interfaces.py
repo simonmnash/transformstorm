@@ -1,5 +1,5 @@
 import curses, os, textwrap
-from textgenerator import TextGenerator
+from .textgenerator import TextGenerator
 
 
 

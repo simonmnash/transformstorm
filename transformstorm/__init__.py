@@ -1,6 +1,6 @@
 import sys, os, curses, logging.config, threading
 from time import sleep
-from interfaces import TextAccumulator, OptionWindow
+from .interfaces import TextAccumulator, OptionWindow
 
 from random import randint
 logging.config.dictConfig({
@@ -68,7 +68,6 @@ def draw_menu(stdscrr):
         for box in option_window.options.values():
             box.refresh()
         stdscr.refresh()
-
 
 def main():
     curses.wrapper(draw_menu)
