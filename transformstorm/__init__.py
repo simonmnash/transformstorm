@@ -43,6 +43,7 @@ def input_thread(stdscr):
         stdscr.refresh()
         # Wait for next input
         k = stdscr.getch()
+    
 
 def draw_menu(stdscrr):
     stdscr = curses.initscr()
@@ -60,7 +61,7 @@ def draw_menu(stdscrr):
     t.setDaemon(True)
     t.start()
 
-    while True:
+    while t.is_alive():
         option_window.attempt_to_generate_new_option_at_text_ticker_location(global_text_accumulator.generate_add_text_candidate())
         sleep(0.5)
 
