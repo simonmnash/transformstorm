@@ -61,7 +61,7 @@ def draw_menu(stdscrr):
     new_box = curses.newwin(1, width, height-2, 0)
     new_box.attron(curses.color_pair(1))
     new_box.attron(curses.A_BOLD)
-    new_box.addstr(0, 0, "UP/DOWN Selects text. RIGHT Adds selected text block to game. LEFT Removes rightmost character from the game. q exits.")
+    new_box.addnstr(0, 0, "UP/DOWN Selects text. RIGHT Adds selected text block to game. LEFT Removes rightmost character from the game. q exits.", width-1)
     new_box.attroff(curses.color_pair(1))
     new_box.attroff(curses.A_BOLD)
     new_box.refresh()
