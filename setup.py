@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 setup(name='transformstorm',
-      version='0.1',
+      version='0.12',
       packages = find_packages(),
       description='A command line interface for playing with language models',
       url='https://github.com/simonmnash/transformstorm',
