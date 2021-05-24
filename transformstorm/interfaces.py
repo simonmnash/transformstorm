@@ -6,8 +6,7 @@ from .textgenerator import TextGenerator
 class TextAccumulator():
     def __init__(self):
         self.complete_text = ""
-        if os.path.isdir("model/"):
-            self.text_generator = TextGenerator()
+        self.text_generator = TextGenerator()
         
     def set_screen(self, stdscr):
         self.screen = stdscr

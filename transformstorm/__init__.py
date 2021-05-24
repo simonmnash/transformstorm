@@ -88,10 +88,7 @@ def draw_menu(stdscrr):
         stdscr.refresh()
 
 def main():
-    if os.path.isdir("model/"):
-        curses.wrapper(draw_menu)
-    else:
-        print("This library doesn't manage models yet, it can only be run in a directory that already has a model subdirectory in it. You should be able to load any huggingface pytorch gpt2 model, or find the one I fined tuned at gyre.itch.io.")
+    curses.wrapper(draw_menu)
 
 if __name__ == "__main__":
     main()
