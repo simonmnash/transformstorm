@@ -9,16 +9,12 @@ I'm interested in experimenting with game-like and toy-like interactions with la
 
 
 ## Installing and Running
-To install either run
+To install run
 
 `pip install transformstorm`
 
-or clone the repo and install through
-
-`pip install -e .`
-
-To run, put the model of interest in a directory named "model" and run 
+After installing, you can run
 
 `transformstorm`
 
-The language model I built this interface for can be downloaded at https://www.simonmnash.com/asset_files/200_word_rpg_model.tar.gz or https://gyre.itch.io/human-machine-rpg-authoring-tool, but it should work for any huggingface/pytorch/gpt2 fine tuned model.
+to download the 200wordrpg model and run. If you run `transformstorm` in a directory with a `model` subdirectory, it will attempt to load a pytorch model from that directory instead of pulling and loading the default model.
