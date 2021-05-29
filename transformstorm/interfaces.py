@@ -1,4 +1,6 @@
 import curses, os, textwrap
+
+from transformers.models.auto.configuration_auto import replace_list_option_in_docstrings
 from .textgenerator import TextGenerator
 
 
@@ -14,10 +16,11 @@ class TextAccumulator():
     def add_text(self, text):
         height, width = self.screen.getmaxyx()
         self.complete_text = self.complete_text + text
-        new_box = curses.newwin(height-5, 60, 0, 75)
+        print()
+        new_box = curses.newwin(height, 60, 0, 75)
         new_box.attron(curses.color_pair(2))
         new_box.attron(curses.A_BOLD)
-        new_box.addnstr(0, 0, textwrap.fill(self.complete_text, 100), width)
+        new_box.addnstr(0, 0, textwrap.fill(self.complete_text, 100, replace_whitespace=False, break_long_words=False), width)
         new_box.attroff(curses.color_pair(2))
         new_box.attroff(curses.A_BOLD)
         new_box.refresh()

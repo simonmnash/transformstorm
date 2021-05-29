@@ -2,7 +2,7 @@ from transformers import pipeline
 from transformers import GPT2LMHeadModel,  GPT2Tokenizer, GPT2Config, GPT2LMHeadModel
 import torch
 import os
-from transformers import AutoTokenizer, AutoModelWithLMHead
+from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalLM
 
 class TextGenerator():
 	def __init__(self):
@@ -12,7 +12,7 @@ class TextGenerator():
 			self.tokenizer = GPT2Tokenizer.from_pretrained('model/')
 		else:
 			print("using gyre/200wordrpgmodel model")
-			self.model = AutoModelWithLMHead.from_pretrained("gyre/200wordrpgmodel")
+			self.model = AutoModelForCausalLM.from_pretrained("gyre/200wordrpgmodel")
 			self.tokenizer = AutoTokenizer.from_pretrained("gyre/200wordrpgmodel")
 
 		self.device = torch.device("cpu")
