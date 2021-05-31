@@ -16,9 +16,9 @@ class TextAccumulator():
     def add_text(self, text):
         height, width = self.screen.getmaxyx()
         self.complete_text = self.complete_text + text
-        wrapped_complete_text = textwrap.wrap(self.complete_text, 80, replace_whitespace=False, break_long_words=False, max_lines=7, placeholder="[ENDOFGAME]")    
+        wrapped_complete_text = textwrap.wrap(self.complete_text, 120, replace_whitespace=False, break_long_words=False, max_lines=7, placeholder="[ENDOFGAME]")    
         ready_to_render_text = "\n".join(wrapped_complete_text)
-        new_box = curses.newwin(height-5, 60, 0, 80)
+        new_box = curses.newwin(height-5, 110, 0, 80)
         new_box.attron(curses.color_pair(2))
         new_box.attron(curses.A_BOLD)
         new_box.addnstr(ready_to_render_text, len(ready_to_render_text))
@@ -28,9 +28,9 @@ class TextAccumulator():
     def backspace(self):
         height, width = self.screen.getmaxyx()
         self.complete_text = self.complete_text[:-1]
-        wrapped_complete_text = textwrap.wrap(self.complete_text, 80, replace_whitespace=False, break_long_words=False, max_lines=7, placeholder="[ENDOFGAME]")    
+        wrapped_complete_text = textwrap.wrap(self.complete_text, 120, replace_whitespace=False, break_long_words=False, max_lines=7, placeholder="[ENDOFGAME]")    
         ready_to_render_text = "\n".join(wrapped_complete_text)
-        new_box = curses.newwin(height-5, 60, 0, 80)
+        new_box = curses.newwin(height-5, 110, 0, 80)
         new_box.attron(curses.color_pair(2))
         new_box.attron(curses.A_BOLD)
         new_box.addnstr(ready_to_render_text, len(ready_to_render_text))
