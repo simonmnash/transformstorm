@@ -6,9 +6,9 @@ from .textgenerator import TextGenerator
 
 
 class TextAccumulator():
-    def __init__(self):
+    def __init__(self, text_generator):
         self.complete_text = ""
-        self.text_generator = TextGenerator()
+        self.text_generator = text_generator
         
     def set_screen(self, stdscr):
         self.screen = stdscr

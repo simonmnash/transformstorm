@@ -1,7 +1,7 @@
-import curses, logging.config, threading
+import curses, logging.config, threading, click
 from time import sleep
 from .interfaces import TextAccumulator, OptionWindow
-
+from .textgenerator import TextGenerator
 from random import randint
 
 highlighted_slot_index = 0
@@ -77,6 +77,14 @@ def input_thread(stdscr, option_window, global_text_accumulator):
         # Wait for next input
         k = stdscr.getch()
     
+@click.command()
+@click.option('--path', default='model/', help='Path to a local pytorch model.')
+@click.option('--name', default='gyre/200wordrpg', prompt='Enter The Model Name', help='Name of the huggingface model.')
+def play(path, name):
+    option_window = OptionWindow()
+    text_generator = TextGenerator(model_path = path, model_name = name)
+    text_accumulator = TextAccumulator(text_generator)
+    curses.wrapper(draw_menu, option_window = option_window, global_text_accumulator = text_accumulator)
 
 def main():
     logging.config.dictConfig({
@@ -84,7 +92,8 @@ def main():
         'disable_existing_loggers': True,
     })
     option_window = OptionWindow()
-    global_text_accumulator = TextAccumulator()
+    text_generator = TextGenerator(model_path = path, model_name = name)
+    global_text_accumulator = TextAccumulator(text_generator)
     curses.wrapper(draw_menu, option_window = option_window, global_text_accumulator = global_text_accumulator)
 
 if __name__ == "__main__":

@@ -1,19 +1,18 @@
-from transformers import pipeline
-from transformers import GPT2LMHeadModel,  GPT2Tokenizer, GPT2Config, GPT2LMHeadModel
-import torch
-import os
-from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalLM
+from transformers import GPT2LMHeadModel,  GPT2Tokenizer, GPT2LMHeadModel
+import torch, os
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
 
 class TextGenerator():
-	def __init__(self):
-		if os.path.isdir("model/"):
+	def __init__(self, model_path=None, model_name=None):
+		if len(model_path) > 0 and os.path.isdir(model_path):
 			print("using local model")
-			self.model = GPT2LMHeadModel.from_pretrained('model/')
-			self.tokenizer = GPT2Tokenizer.from_pretrained('model/')
+			self.model = GPT2LMHeadModel.from_pretrained(model_path)
+			self.tokenizer = GPT2Tokenizer.from_pretrained(model_path)
 		else:
-			print("using gyre/200wordrpgmodel model")
-			self.model = AutoModelForCausalLM.from_pretrained("gyre/200wordrpgmodel")
-			self.tokenizer = AutoTokenizer.from_pretrained("gyre/200wordrpgmodel")
+			print(f"using {model_name}")
+			self.model = AutoModelForCausalLM.from_pretrained(model_name)
+			self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 		self.device = torch.device("cpu")
 		self.model.to(self.device)
