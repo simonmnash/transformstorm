@@ -79,8 +79,12 @@ def input_thread(stdscr, option_window, global_text_accumulator):
     
 @click.command()
 @click.option('--path', default='model/', help='Path to a local pytorch model.')
-@click.option('--name', default='gyre/200wordrpg', prompt='Enter The Model Name', help='Name of the huggingface model.')
-def play(path, name):
+@click.option('--name', default='gyre/200wordrpgmodel', prompt='Enter The Model Name', help='Name of the huggingface model.')
+def play(path: str, name: str):
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': True,
+    })
     option_window = OptionWindow()
     text_generator = TextGenerator(model_path = path, model_name = name)
     text_accumulator = TextAccumulator(text_generator)
